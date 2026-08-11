@@ -1,6 +1,7 @@
 import type { Tile } from "../world/generateWorld.ts";
 import { randomFromCoordinates } from "../utils.ts";
 import type { Human } from "./Human.tsx";
+import { isWalkableTile } from "../world/worldUtils.ts";
 // ----------------------------------------------------------------------
 
 export default function generateHumans(
@@ -9,10 +10,7 @@ export default function generateHumans(
   seed: number,
 ): Human[] {
   // İnsanları suya veya kuma doğurmak istemiyoruz.
-  const availableTiles = tiles.filter(
-    (tile) =>
-      tile.type === "grass" || tile.type === "forest" || tile.type === "sand",
-  );
+  const availableTiles = tiles.filter(isWalkableTile);
 
   // Tile'ları seed'e bağlı olarak karıştırıyoruz.
   // Aynı seed her zaman aynı insan başlangıçlarını verir.

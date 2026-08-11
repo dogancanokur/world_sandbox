@@ -1,7 +1,7 @@
 import { WORLD_SIZE } from "../config.ts";
 import { useRef } from "react";
 import { Mesh } from "three";
-import { useFrame } from "@react-three/fiber";
+import { type RootState, useFrame } from "@react-three/fiber";
 import { clamp } from "../utils.ts";
 
 // ----------------------------------------------------------------------
@@ -28,7 +28,7 @@ export default function HumanMesh({ human }: HumanMeshProps) {
     z: human.z - WORLD_SIZE / 2,
   });
 
-  useFrame((_, delta) => {
+  const onFrameUpdate = (_state: RootState, delta: number) => {
     const mesh = meshRef.current;
 
     // Mesh henüz oluşturulmamışsa hiçbir şey yapma.
@@ -50,8 +50,16 @@ export default function HumanMesh({ human }: HumanMeshProps) {
       targetRef.current = {
         // Şimdilik yakınlarda rastgele dolaştırıyoruz.
         // Bir sonraki adımda suya girmelerini engelleyeceğiz.
-        x: clamp(mesh.position.x + (Math.random() - 0.5) * 4, -WORLD_SIZE / 2, WORLD_SIZE / 2),
-        z: clamp(mesh.position.z + (Math.random() - 0.5) * 4, -WORLD_SIZE / 2, WORLD_SIZE / 2),
+        x: clamp(
+          mesh.position.x + (Math.random() - 0.5) * 4,
+          -WORLD_SIZE / 2,
+          WORLD_SIZE / 2,
+        ),
+        z: clamp(
+          mesh.position.z + (Math.random() - 0.5) * 4,
+          -WORLD_SIZE / 2,
+          WORLD_SIZE / 2,
+        ),
       };
 
       return;
@@ -68,7 +76,8 @@ export default function HumanMesh({ human }: HumanMeshProps) {
     // FPS değişse bile hareket hızının aynı kalmasını sağlar.
     mesh.position.x += directionX * speed * delta;
     mesh.position.z += directionZ * speed * delta;
-  });
+  };
+  useFrame(onFrameUpdate);
 
   return (
     <mesh
