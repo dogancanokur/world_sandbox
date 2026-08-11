@@ -1,6 +1,8 @@
 import { generateWorld, getTileColor } from "./generateWorld.ts";
 import { useMemo } from "react";
 import { WORLD_SIZE } from "../config.ts";
+import generateHumans from "../human/generateHuman.ts";
+import Humans from "../human/Human.tsx";
 // ----------------------------------------------------------------------
 
 export function World() {
@@ -9,10 +11,12 @@ export function World() {
   // şimdilik component dışında değil, burada bir kere üretiyoruz.
 
   const seed = 1337;
-  const tiles = useMemo(() => worldGeneration(WORLD_SIZE, seed), []);
 
   // Dünya sadece seed değişince yeniden üretilir.
   const tiles = useMemo(() => generateWorld(seed), [seed]);
+
+  // İnsanların başlangıç konumları da world veya seed değiştiğinde yeniden hesaplanır.
+  const humans = useMemo(() => generateHumans(tiles, 20, seed), [tiles, seed]);
 
   return (
     <>
@@ -37,6 +41,7 @@ export function World() {
           <meshStandardMaterial color={getTileColor(tile.type)} />
         </mesh>
       ))}
+      <Humans humans={humans} />
     </>
   );
 }
