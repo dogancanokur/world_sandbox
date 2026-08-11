@@ -2,7 +2,8 @@ import { generateWorld, getTileColor } from "./generateWorld.ts";
 import { useMemo } from "react";
 import { WORLD_SIZE } from "../config.ts";
 import generateHumans from "../human/generateHuman.ts";
-import Humans from "../human/Human.tsx";
+import HumanMesh from "../human/Human.tsx";
+
 // ----------------------------------------------------------------------
 
 export function World() {
@@ -41,7 +42,10 @@ export function World() {
           <meshStandardMaterial color={getTileColor(tile.type)} />
         </mesh>
       ))}
-      <Humans humans={humans} />
+
+      {humans.map((human) => (
+        <HumanMesh key={human.id} human={human} />
+      ))}
     </>
   );
 }
