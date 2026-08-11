@@ -1,15 +1,18 @@
-import { worldGeneration, getTileColor } from "./worldGeneration.ts";
+import { generateWorld, getTileColor } from "./generateWorld.ts";
 import { useMemo } from "react";
+import { WORLD_SIZE } from "../config.ts";
 // ----------------------------------------------------------------------
 
 export function World() {
   //
-  const WORLD_SIZE = 60;
   // World component her render olduğunda değişmesin diye
   // şimdilik component dışında değil, burada bir kere üretiyoruz.
 
   const seed = 1337;
   const tiles = useMemo(() => worldGeneration(WORLD_SIZE, seed), []);
+
+  // Dünya sadece seed değişince yeniden üretilir.
+  const tiles = useMemo(() => generateWorld(seed), [seed]);
 
   return (
     <>

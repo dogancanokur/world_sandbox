@@ -1,5 +1,6 @@
 import { valueNoise } from "./noise.ts";
 import { clamp } from "../utils.ts";
+import { WORLD_SIZE } from "../config.ts";
 
 export type TileType = "water" | "sand" | "grass" | "forest";
 
@@ -9,7 +10,7 @@ export type Tile = {
   type: TileType;
 };
 
-export function worldGeneration(WORLD_SIZE: number, seed: number): Tile[] {
+export function generateWorld(seed: number): Tile[] {
   const tiles: Tile[] = [];
 
   const center = WORLD_SIZE / 2;
