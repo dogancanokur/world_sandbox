@@ -7,20 +7,44 @@ export type Tile = {
   type: TileType;
 };
 
-export function worldGeneration(worldSizeX: number, worldSizeY: number): Tile[] {
+export function worldGeneration(WORLD_SIZE: number): Tile[] {
   const tiles: Tile[] = [];
 
-  for (let x = 0; x < worldSizeX; x++) {
-    for (let z = 0; z < worldSizeY; z++) {
-      const random = Math.random();
+  // Haritanın orta noktasını hesaplıyoruz.
+  const center = WORLD_SIZE / 2;
+
+  /**
+   * Merkeze olan uzaklığa göre terrain tipini belirler.
+   * @param x
+   * @param z
+   */
+  const calculateDistanceFromCenter = (x: number, z: number) => {
+    const dx = x - center;
+    const dz = z - center;
+    return Math.sqrt(dx * dx + dz * dz);
+  };
+
+  for (let x = 0; x < WORLD_SIZE; x++) {
+    for (let z = 0; z < WORLD_SIZE; z++) {
+      const distanceFromCenter = calculateDistanceFromCenter(x, z);
+
+      // // 0(merkez) - 1(kenar)
+      const normalizedDistance = distanceFromCenter / center;
+      // kenarlara yaklaştıkça terrain değeri küçülecek. böylece dış taraflarda su oluşacak
+      const islandFalloff = 1 - normalizedDistance;
+
+      // Adanın tamamen yuvarlak olmaması için biraz random noise ekliyoruz.
+      const noise = Math.random() * 0.35;
+
+      const terrainValue = islandFalloff + noise;
 
       let type: TileType;
 
-      if (random < 0.15) {
+      if (terrainValue < 0.3) {
         type = "water";
-      } else if (random < 0.25) {
+      } else if (terrainValue < 0.42) {
         type = "sand";
-      } else if (random < 0.8) {
+      } else if (terrainValue < 0.85) {
         type = "grass";
       } else {
         type = "forest";

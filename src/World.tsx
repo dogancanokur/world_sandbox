@@ -1,17 +1,14 @@
-import {
-  worldGeneration,
-  getTileColor,
-} from "./worldGeneration.ts";
+import { worldGeneration, getTileColor } from "./worldGeneration.ts";
+import { useMemo } from "react";
 // ----------------------------------------------------------------------
 
 export function World() {
   //
-  const WORLD_SIZE_X = 20;
-  const WORLD_SIZE_Y = 25;
+  const WORLD_SIZE = 60;
   // World component her render olduğunda değişmesin diye
   // şimdilik component dışında değil, burada bir kere üretiyoruz.
 
-  const tiles = worldGeneration(WORLD_SIZE_X, WORLD_SIZE_Y);
+  const tiles = useMemo(() => worldGeneration(WORLD_SIZE), []);
 
   return (
     <>
@@ -25,9 +22,9 @@ export function World() {
           key={`${tile.x}-${tile.z}`}
           position={[
             // Haritayı dünya merkezinin etrafına taşıyoruz.
-            tile.x - WORLD_SIZE_X / 2,
+            tile.x - WORLD_SIZE / 2,
             0,
-            tile.z - WORLD_SIZE_Y / 2,
+            tile.z - WORLD_SIZE / 2,
           ]}
         >
           {/*tilelar arası .95 olması çok az boşluk bırakmak için*/}
