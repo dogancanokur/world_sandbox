@@ -1,6 +1,5 @@
-// Haritadaki bir hücrenin türü.
 import { valueNoise } from "./noise.ts";
-import { clamp } from "./utils.ts";
+import { clamp } from "../utils.ts";
 
 export type TileType = "water" | "sand" | "grass" | "forest";
 

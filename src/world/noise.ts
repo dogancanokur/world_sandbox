@@ -1,4 +1,4 @@
-import { lerp, randomFromCoordinates, smoothStep } from "./utils.ts";
+import { lerp, randomFromCoordinates, smoothStep } from "../utils.ts";
 
 export function valueNoise(x: number, z: number, seed: number) {
   // Hangi grid karesinin içinde olduğumuzu buluyoruz.
