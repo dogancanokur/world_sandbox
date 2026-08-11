@@ -1,4 +1,7 @@
 // Haritadaki bir hücrenin türü.
+import { valueNoise } from "./noise.ts";
+import { clamp } from "./utils.ts";
+
 export type TileType = "water" | "sand" | "grass" | "forest";
 
 export type Tile = {
@@ -7,46 +10,40 @@ export type Tile = {
   type: TileType;
 };
 
-export function worldGeneration(WORLD_SIZE: number, seed:number): Tile[] {
+export function worldGeneration(WORLD_SIZE: number, seed: number): Tile[] {
   const tiles: Tile[] = [];
 
-  // Haritanın orta noktasını hesaplıyoruz.
   const center = WORLD_SIZE / 2;
-
-  const random = createSeededRandom(seed);
-  /**
-   * Merkeze olan uzaklığa göre terrain tipini belirler.
-   * @param x
-   * @param z
-   */
-  const calculateDistanceFromCenter = (x: number, z: number) => {
-    const dx = x - center;
-    const dz = z - center;
-    return Math.sqrt(dx * dx + dz * dz);
-  };
+  const maxDistance = WORLD_SIZE / 2;
 
   for (let x = 0; x < WORLD_SIZE; x++) {
     for (let z = 0; z < WORLD_SIZE; z++) {
-      const distanceFromCenter = calculateDistanceFromCenter(x, z);
+      const dx = x - center;
+      const dz = z - center;
 
-      // // 0(merkez) - 1(kenar)
-      const normalizedDistance = distanceFromCenter / center;
-      // kenarlara yaklaştıkça terrain değeri küçülecek. böylece dış taraflarda su oluşacak
-      const islandFalloff = 1 - normalizedDistance;
+      const distanceFromCenter = Math.sqrt(dx * dx + dz * dz);
 
-      // Adanın tamamen yuvarlak olmaması için biraz random noise ekliyoruz.
+      const normalizedDistance = distanceFromCenter / maxDistance;
 
-      const noise = random() * 0.35;
+      // Merkez yüksek, kenarlar düşük.
+      const islandFalloff = clamp(1 - normalizedDistance, 0, 1);
 
-      const terrainValue = islandFalloff + noise;
+      // Koordinatları küçültmemizin sebebi noise'u "zoomlamak".
+      // 0.15 küçük ve geniş bölgeler oluşturur.
+      // Daha büyük değerler daha parçalı terrain üretir.
+      const noise = valueNoise(x * 0.15, z * 0.15, seed);
+
+      // Noise 0-1 arasında.
+      // Biraz merkeze ağırlık verip ikisini birleştiriyoruz.
+      const terrainValue = islandFalloff * 0.8 + noise * 0.45;
 
       let type: TileType;
 
-      if (terrainValue < 0.3) {
+      if (terrainValue < 0.28) {
         type = "water";
-      } else if (terrainValue < 0.42) {
+      } else if (terrainValue < 0.38) {
         type = "sand";
-      } else if (terrainValue < 0.85) {
+      } else if (terrainValue < 0.7) {
         type = "grass";
       } else {
         type = "forest";
@@ -78,16 +75,4 @@ export function getTileColor(type: TileType) {
     default:
       return "#5d9f4e";
   }
-}
-
-function createSeededRandom(seed: number) {
-  let value = seed;
-
-  return () => {
-    value = Math.sin(value) * 10000;
-
-    let number = value - Math.floor(value);
-    console.log("seed ", value);
-    return number;
-  };
 }
