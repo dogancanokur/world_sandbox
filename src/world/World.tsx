@@ -1,6 +1,6 @@
 import { generateWorld, getTileColor } from "./generateWorld.ts";
 import { useMemo } from "react";
-import { WORLD_SIZE } from "../config.ts";
+import { WORLD_INITIAL_HUMAN_SIZE, WORLD_SIZE } from "../config.ts";
 import generateHumans from "../human/generateHuman.ts";
 import HumanMesh from "../human/Human.tsx";
 
@@ -17,7 +17,10 @@ export function World() {
   const tiles = useMemo(() => generateWorld(seed), [seed]);
 
   // İnsanların başlangıç konumları da world veya seed değiştiğinde yeniden hesaplanır.
-  const humans = useMemo(() => generateHumans(tiles, 20, seed), [tiles, seed]);
+  const humans = useMemo(
+    () => generateHumans(tiles, WORLD_INITIAL_HUMAN_SIZE, seed),
+    [tiles, seed],
+  );
 
   return (
     <>
