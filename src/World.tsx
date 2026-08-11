@@ -8,7 +8,8 @@ export function World() {
   // World component her render olduğunda değişmesin diye
   // şimdilik component dışında değil, burada bir kere üretiyoruz.
 
-  const tiles = useMemo(() => worldGeneration(WORLD_SIZE), []);
+  const seed = 1337;
+  const tiles = useMemo(() => worldGeneration(WORLD_SIZE, seed), []);
 
   return (
     <>

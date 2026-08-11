@@ -7,12 +7,13 @@ export type Tile = {
   type: TileType;
 };
 
-export function worldGeneration(WORLD_SIZE: number): Tile[] {
+export function worldGeneration(WORLD_SIZE: number, seed:number): Tile[] {
   const tiles: Tile[] = [];
 
   // Haritanın orta noktasını hesaplıyoruz.
   const center = WORLD_SIZE / 2;
 
+  const random = createSeededRandom(seed);
   /**
    * Merkeze olan uzaklığa göre terrain tipini belirler.
    * @param x
@@ -34,7 +35,8 @@ export function worldGeneration(WORLD_SIZE: number): Tile[] {
       const islandFalloff = 1 - normalizedDistance;
 
       // Adanın tamamen yuvarlak olmaması için biraz random noise ekliyoruz.
-      const noise = Math.random() * 0.35;
+
+      const noise = random() * 0.35;
 
       const terrainValue = islandFalloff + noise;
 
@@ -76,4 +78,16 @@ export function getTileColor(type: TileType) {
     default:
       return "#5d9f4e";
   }
+}
+
+function createSeededRandom(seed: number) {
+  let value = seed;
+
+  return () => {
+    value = Math.sin(value) * 10000;
+
+    let number = value - Math.floor(value);
+    console.log("seed ", value);
+    return number;
+  };
 }
