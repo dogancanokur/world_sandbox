@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { WORLD_INITIAL_HUMAN_SIZE, WORLD_SIZE } from "../config.ts";
 import generateHumans from "../human/generateHuman.ts";
 import HumanMesh from "../human/Human.tsx";
+import { generateResources } from "../resource/generate.ts";
+import ResourceMesh from "../resource/ResourceMesh.tsx";
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +21,15 @@ export function World() {
   // İnsanların başlangıç konumları da world veya seed değiştiğinde yeniden hesaplanır.
   const humans = useMemo(
     () => generateHumans(tiles, WORLD_INITIAL_HUMAN_SIZE, seed),
+    [tiles, seed],
+  );
+
+  const foodResource = useMemo(
+    () => generateResources(tiles, 30, seed, "food", 10),
+    [tiles, seed],
+  );
+  const woodResource = useMemo(
+    () => generateResources(tiles, 30, seed, "wood", 20),
     [tiles, seed],
   );
 
@@ -48,6 +59,19 @@ export function World() {
 
       {humans.map((human) => (
         <HumanMesh key={human.id} human={human} tiles={tiles} />
+      ))}
+
+      {foodResource.map((resourceNode) => (
+        <ResourceMesh
+          key={resourceNode.id}
+          resource={resourceNode}
+        />
+      ))}
+      {woodResource.map((resourceNode) => (
+        <ResourceMesh
+          key={resourceNode.id}
+          resource={resourceNode}
+        />
       ))}
     </>
   );
