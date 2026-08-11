@@ -44,7 +44,7 @@ export function World() {
       ))}
 
       {humans.map((human) => (
-        <HumanMesh key={human.id} human={human} />
+        <HumanMesh key={human.id} human={human} tiles={tiles} />
       ))}
     </>
   );

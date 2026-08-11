@@ -2,7 +2,8 @@ import { WORLD_SIZE } from "../config.ts";
 import { useRef } from "react";
 import { Mesh } from "three";
 import { type RootState, useFrame } from "@react-three/fiber";
-import { clamp } from "../utils.ts";
+import type { Tile } from "../world/generateWorld.ts";
+import { isWalkableTile } from "../world/worldUtils.ts";
 
 // ----------------------------------------------------------------------
 
@@ -14,9 +15,10 @@ export type Human = {
 
 type HumanMeshProps = {
   human: Human;
+  tiles: Tile[];
 };
 
-export default function HumanMesh({ human }: HumanMeshProps) {
+export default function HumanMesh({ human, tiles }: HumanMeshProps) {
   // Three.js'teki gerçek mesh objesine referans tutuyoruz.
   // Böylece React render etmeden objenin pozisyonunu değiştirebiliriz.
   const meshRef = useRef<Mesh>(null);
@@ -47,20 +49,25 @@ export default function HumanMesh({ human }: HumanMeshProps) {
 
     // Hedefe ulaştıysa yeni rastgele hedef seç.
     if (distance < 0.1) {
-      targetRef.current = {
-        // Şimdilik yakınlarda rastgele dolaştırıyoruz.
-        // Bir sonraki adımda suya girmelerini engelleyeceğiz.
-        x: clamp(
-          mesh.position.x + (Math.random() - 0.5) * 4,
-          -WORLD_SIZE / 2,
-          WORLD_SIZE / 2,
-        ),
-        z: clamp(
-          mesh.position.z + (Math.random() - 0.5) * 4,
-          -WORLD_SIZE / 2,
-          WORLD_SIZE / 2,
-        ),
-      };
+      const nearbyTiles = getWalkableTilesNear(
+        tiles,
+        mesh.position.x,
+        mesh.position.z,
+        5, // İnsanın yaklaşık 5 birim çevresindeki yürünebilir tile'ları buluyoruz.
+      );
+
+      if (nearbyTiles.length > 0) {
+        // Uygun tile'lardan rastgele birini hedef seçiyoruz.
+        const randomIndex = Math.floor(Math.random() * nearbyTiles.length);
+
+        const targetTile = nearbyTiles[randomIndex];
+
+        targetRef.current = {
+          // Tile koordinatını world koordinatına çeviriyoruz.
+          x: targetTile.x - WORLD_SIZE / 2,
+          z: targetTile.z - WORLD_SIZE / 2,
+        };
+      }
 
       return;
     }
@@ -77,6 +84,7 @@ export default function HumanMesh({ human }: HumanMeshProps) {
     mesh.position.x += directionX * speed * delta;
     mesh.position.z += directionZ * speed * delta;
   };
+
   useFrame(onFrameUpdate);
 
   return (
@@ -90,4 +98,30 @@ export default function HumanMesh({ human }: HumanMeshProps) {
       <meshStandardMaterial color="#e05a47" />
     </mesh>
   );
+}
+
+function getWalkableTilesNear(
+  tiles: Tile[],
+  worldX: number,
+  worldZ: number,
+  radius: number,
+) {
+  return tiles.filter((tile) => {
+    if (!isWalkableTile(tile)) {
+      return false;
+    }
+
+    // Tile koordinatını Three.js world koordinatına çeviriyoruz.
+    const tileWorldX = tile.x - WORLD_SIZE / 2;
+    const tileWorldZ = tile.z - WORLD_SIZE / 2;
+
+    const dx = tileWorldX - worldX;
+    const dz = tileWorldZ - worldZ;
+
+    // Kare mesafe kullanıyoruz.
+    // sqrt almaya gerek yok çünkü sadece radius ile karşılaştırıyoruz.
+    const distanceSquared = dx * dx + dz * dz;
+
+    return distanceSquared <= radius * radius;
+  });
 }
