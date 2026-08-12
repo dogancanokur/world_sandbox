@@ -24,11 +24,11 @@ export function World() {
     [tiles, seed],
   );
 
-  const foodResource = useMemo(
+  const foodResources = useMemo(
     () => generateResources(tiles, 30, seed, "food", 10),
     [tiles, seed],
   );
-  const woodResource = useMemo(
+  const woodResources = useMemo(
     () => generateResources(tiles, 30, seed, "wood", 20),
     [tiles, seed],
   );
@@ -58,20 +58,19 @@ export function World() {
       ))}
 
       {humans.map((human) => (
-        <HumanMesh key={human.id} human={human} tiles={tiles} />
+        <HumanMesh
+          key={human.id}
+          human={human}
+          tiles={tiles}
+          foodResources={foodResources}
+        />
       ))}
 
-      {foodResource.map((resourceNode) => (
-        <ResourceMesh
-          key={resourceNode.id}
-          resource={resourceNode}
-        />
+      {foodResources.map((foodResourceNode) => (
+        <ResourceMesh key={foodResourceNode.id} resource={foodResourceNode} />
       ))}
-      {woodResource.map((resourceNode) => (
-        <ResourceMesh
-          key={resourceNode.id}
-          resource={resourceNode}
-        />
+      {woodResources.map((woodResourceNode) => (
+        <ResourceMesh key={woodResourceNode.id} resource={woodResourceNode} />
       ))}
     </>
   );

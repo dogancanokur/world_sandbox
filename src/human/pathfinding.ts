@@ -14,7 +14,14 @@ export function getCurrentTileOfActor(
   return tiles.find((tile) => tile.x === tileX && tile.z === tileZ) ?? null;
 }
 
+/*
+ * Euclidean distance: sqrt(dx² + dz²)
+ * Manhattan distance: abs(dx) + abs(dz)
+ */
+
 export function getWalkableNeighbors(tiles: Tile[], currentTile: Tile): Tile[] {
+  const enableDiagonalMovement = false;
+
   return tiles.filter((tile) => {
     // Önce yürünemeyen tile'ları direkt eliyoruz.
     if (!isWalkableTile(tile)) {
@@ -31,6 +38,7 @@ export function getWalkableNeighbors(tiles: Tile[], currentTile: Tile): Tile[] {
 
     // çapraz komşular.
     const isDiagonalNeighbor =
+      enableDiagonalMovement &&
       Math.abs(tile.z - currentTile.z) === 1 &&
       Math.abs(tile.x - currentTile.x) === 1;
 
