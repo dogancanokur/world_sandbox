@@ -10,6 +10,7 @@ export function getClosestFoodResource(
   let closestFoodResource: ResourceNode | null = null;
 
   for (const foodResource of foodResources) {
+    if (foodResource.amount <= 0) continue;
     const manhattanDistance =
       Math.abs(currentTile.z - foodResource.z) +
       Math.abs(currentTile.x - foodResource.x);
@@ -28,7 +29,8 @@ export function getClosestNeighborToResource(
 ): Tile | null {
   //
   let closestDistance = Infinity;
-  let closestNeighbor: Tile | null = null;  for (const tile of neighbors) {
+  let closestNeighbor: Tile | null = null;
+  for (const tile of neighbors) {
     const manhattanDistance =
       Math.abs(tile.x - resource.x) + Math.abs(tile.z - resource.z);
     if (closestDistance > manhattanDistance) {

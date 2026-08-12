@@ -1,4 +1,4 @@
-import { WORLD_INITIAL_HUMAN_SPEED, WORLD_SIZE } from "../config.ts";
+import { WORLD_INITIAL, WORLD_SIZE } from "../config.ts";
 import { useRef } from "react";
 import type { Mesh } from "three";
 import { type RootState, useFrame } from "@react-three/fiber";
@@ -51,8 +51,8 @@ export default function HumanMesh({
     }
 
     const hungerRate = 2;
-    const hungerThreshold = 99;
-    const speed = WORLD_INITIAL_HUMAN_SPEED;
+    const hungerThreshold = 80;
+    const speed = WORLD_INITIAL.human.speed;
 
     // delta sayesinde hunger FPS'ten bağımsız azalıyor.
     satietyRef.current = clamp(satietyRef.current - delta * hungerRate, 0, 100);
@@ -116,8 +116,18 @@ export default function HumanMesh({
         currentTile,
         foodResources,
       );
-
       if (closestFoodResource) {
+        if (
+          currentTile.x === closestFoodResource.x &&
+          currentTile.z === closestFoodResource.z
+        ) {
+          console.log("yummy yummy");
+          if (closestFoodResource.amount > 0) {
+            closestFoodResource.amount -= 1;
+            satietyRef.current = 100;
+          }
+          return;
+        }
         nextTile = getClosestNeighborToResource(neighbors, closestFoodResource);
       }
     }
