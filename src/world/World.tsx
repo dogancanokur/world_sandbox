@@ -1,7 +1,7 @@
 import { generateWorld, getTileColor } from "./generateWorld.ts";
 import { useMemo } from "react";
 import { WORLD_INITIAL_HUMAN_SIZE, WORLD_SIZE } from "../config.ts";
-import generateHumans from "../human/generateHuman.ts";
+import generateHumans from "../human/generate.ts";
 import HumanMesh from "../human/Human.tsx";
 import { generateResources } from "../resource/generate.ts";
 import ResourceMesh from "../resource/ResourceMesh.tsx";

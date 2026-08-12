@@ -1,9 +1,10 @@
 import { WORLD_INITIAL_HUMAN_SPEED, WORLD_SIZE } from "../config.ts";
 import { useRef } from "react";
-import { Mesh } from "three";
+import type { Mesh } from "three";
 import { type RootState, useFrame } from "@react-three/fiber";
 import type { Tile } from "../world/generateWorld.ts";
 import { getCurrentTileOfActor, getWalkableNeighbors } from "./pathfinding.ts";
+import { clamp } from "../utils.ts";
 
 // ----------------------------------------------------------------------
 
@@ -11,6 +12,8 @@ export type Human = {
   id: number;
   x: number;
   z: number;
+
+  satiety: number;
 };
 
 type HumanMeshProps = {
@@ -22,6 +25,7 @@ export default function HumanMesh({ human, tiles }: HumanMeshProps) {
   // Three.js'teki gerçek mesh objesine referans tutuyoruz.
   // Böylece React render etmeden objenin pozisyonunu değiştirebiliriz.
   const meshRef = useRef<Mesh>(null);
+  const satietyRef = useRef(human.satiety);
 
   // useState => değer değişir → React yeniden render eder
   // useRef => değer değişir → React yeniden render etmez
@@ -39,6 +43,10 @@ export default function HumanMesh({ human, tiles }: HumanMeshProps) {
     }
 
     const target = targetRef.current;
+
+    const hungerRate = 2;
+
+    satietyRef.current = clamp(satietyRef.current - delta * hungerRate, 0, 100);
 
     // Hedef ile mevcut pozisyon arasındaki fark.
     const dx = target.x - mesh.position.x;
