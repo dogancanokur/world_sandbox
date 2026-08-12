@@ -21,3 +21,20 @@ export function getClosestFoodResource(
 
   return closestFoodResource;
 }
+
+export function getClosestNeighborToResource(
+  neighbors: Tile[],
+  resource: ResourceNode,
+): Tile | null {
+  //
+  let closestDistance = Infinity;
+  let closestNeighbor: Tile | null = null;  for (const tile of neighbors) {
+    const manhattanDistance =
+      Math.abs(tile.x - resource.x) + Math.abs(tile.z - resource.z);
+    if (closestDistance > manhattanDistance) {
+      closestDistance = manhattanDistance;
+      closestNeighbor = tile;
+    }
+  }
+  return closestNeighbor;
+}

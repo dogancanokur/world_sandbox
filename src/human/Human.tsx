@@ -6,7 +6,10 @@ import type { Tile } from "../world/generateWorld.ts";
 import { getCurrentTileOfActor, getWalkableNeighbors } from "./pathfinding.ts";
 import type { ResourceNode } from "../resource/types.ts";
 import { clamp } from "../utils.ts";
-import { getClosestFoodResource } from "./helper.ts";
+import {
+  getClosestFoodResource,
+  getClosestNeighborToResource,
+} from "./helper.ts";
 
 // ----------------------------------------------------------------------
 
@@ -98,41 +101,35 @@ export default function HumanMesh({
       return;
     }
 
-    let closestFoodResource: ResourceNode | null;
-    const isHungry = satietyRef.current <= hungerThreshold;
-
-    if (isHungry) {
-      closestFoodResource = getClosestFoodResource(currentTile, foodResources);
-
-      console.log(
-        `Human ${human.id} hungry`,
-        "satiety:",
-        satietyRef.current,
-        "closest food:",
-        closestFoodResource,
-      );
-    }
-
-    /*
-     * 8B'de food'u henüz movement target yapmıyoruz.
-     * Human şimdilik eski davranışıyla random wander etmeye devam ediyor.
-     *
-     * 8C'de hungry ise buradaki seçim mantığını değiştireceğiz.
-     */
-
     const neighbors = getWalkableNeighbors(tiles, currentTile);
 
     if (neighbors.length === 0) {
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * neighbors.length);
-    const targetTile = neighbors[randomIndex];
+    const isHungry = satietyRef.current <= hungerThreshold;
 
-    // targetRef world coordinate tutmaya devam ediyor.
+    let nextTile: Tile | null = null;
+
+    if (isHungry) {
+      const closestFoodResource = getClosestFoodResource(
+        currentTile,
+        foodResources,
+      );
+
+      if (closestFoodResource) {
+        nextTile = getClosestNeighborToResource(neighbors, closestFoodResource);
+      }
+    }
+
+    if (!nextTile) {
+      const randomIndex = Math.floor(Math.random() * neighbors.length);
+      nextTile = neighbors[randomIndex];
+    }
+
     targetRef.current = {
-      x: targetTile.x - WORLD_SIZE / 2,
-      z: targetTile.z - WORLD_SIZE / 2,
+      x: nextTile.x - WORLD_SIZE / 2,
+      z: nextTile.z - WORLD_SIZE / 2,
     };
   };
 
