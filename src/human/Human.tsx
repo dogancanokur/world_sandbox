@@ -6,6 +6,7 @@ import type { Tile } from "../world/generateWorld.ts";
 import { getCurrentTileOfActor, getWalkableNeighbors } from "./pathfinding.ts";
 import type { ResourceNode } from "../resource/types.ts";
 import { clamp } from "../utils.ts";
+import { getClosestFoodResource } from "./helper.ts";
 
 // ----------------------------------------------------------------------
 
@@ -97,25 +98,11 @@ export default function HumanMesh({
       return;
     }
 
+    let closestFoodResource: ResourceNode | null;
     const isHungry = satietyRef.current <= hungerThreshold;
 
     if (isHungry) {
-      let closestFoodResource: ResourceNode | null = null;
-      let closestFoodDistance = Infinity;
-
-      for (const foodResource of foodResources) {
-        // Tile coordinate ile tile coordinate karşılaştırıyoruz.
-        const dx = Math.abs(currentTile.x - foodResource.x);
-        const dz = Math.abs(currentTile.z - foodResource.z);
-
-        // 4 yönlü grid hareketi için Manhattan distance kullanıyoruz.
-        const manhattanDistance = dx + dz;
-
-        if (manhattanDistance < closestFoodDistance) {
-          closestFoodDistance = manhattanDistance;
-          closestFoodResource = foodResource;
-        }
-      }
+      closestFoodResource = getClosestFoodResource(currentTile, foodResources);
 
       console.log(
         `Human ${human.id} hungry`,
@@ -123,8 +110,6 @@ export default function HumanMesh({
         satietyRef.current,
         "closest food:",
         closestFoodResource,
-        "distance:",
-        closestFoodDistance,
       );
     }
 
