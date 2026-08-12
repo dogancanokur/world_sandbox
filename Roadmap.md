@@ -7,7 +7,13 @@
 <li>Basic movement İnsanların dünyada dolaşması</li>
 <li>Grid movement/pathfinding Sudan geçmeden tile bazlı hareket</li>
 <li>Resources Food, wood gibi kaynaklar</li>
-<li>Needs Hunger gibi ilk ihtiyaç</li>
+<li>Needs Hunger gibi ilk ihtiyaç
+<ol>
+<li>8A: Human'ın ne zaman hungry olduğunu belirle.</li>
+<li>8B: Hungry olduğunda hedef food seç.</li>
+<li>8C: Her tile'da food'a yaklaştıran walkable komşuyu seç.</li>
+<li>8D: Food tile'ına ulaşınca resource amount azalt ve satiety artır.</li>
+</ol></li>
 <li>Jobs/actions Yiyecek ara, odun topla</li>
 <li>Settlement İnsanların ev yapıp köy oluşturması</li>
 <li>Village economy Ortak food/wood stoğu ve nüfus</li>

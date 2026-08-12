@@ -46,65 +46,70 @@ export default function HumanMesh({ human, tiles }: HumanMeshProps) {
 
     const hungerRate = 2;
 
-    satietyRef.current = clamp(satietyRef.current - delta * hungerRate, 0, 100);
-
-    // Hedef ile mevcut pozisyon arasındaki fark.
-    const dx = target.x - mesh.position.x;
-    const dz = target.z - mesh.position.z;
-
-    // Hedefe olan mesafe.
-    const distance = Math.sqrt(dx * dx + dz * dz);
-
-    if (distance < 0.1) {
-      // Hedefe çok yaklaştığımız için pozisyonu tam hedefe oturtuyoruz.
-      // Böylece 4.999 gibi küsuratlarla uğraşmıyoruz.
-      mesh.position.x = target.x;
-      mesh.position.z = target.z;
-
-      // Actor'ın şu anda üzerinde olduğu tile'ı bul.
-      const currentTile = getCurrentTileOfActor(
-        tiles,
-        mesh.position.x,
-        mesh.position.z,
-      );
-
-      if (!currentTile) {
-        return;
-      }
-
-      // Sadece dört yönlü yürünebilir komşuları bul.
-      const neighbors = getWalkableNeighbors(tiles, currentTile);
-
-      if (neighbors.length === 0) {
-        return;
-      }
-
-      // Komşulardan rastgele birini seç.
-      const randomIndex = Math.floor(Math.random() * neighbors.length);
-
-      const targetTile = neighbors[randomIndex];
-
-      // Tile koordinatını Three.js world koordinatına çevir.
-      targetRef.current = {
-        x: targetTile.x - WORLD_SIZE / 2,
-        z: targetTile.z - WORLD_SIZE / 2,
-      };
-
-      return;
-    }
-
     const speed = WORLD_INITIAL_HUMAN_SPEED;
 
-    // Hedef yönü.
-    const directionX = dx / distance;
-    const directionZ = dz / distance;
+    satietyRef.current = clamp(satietyRef.current - delta * hungerRate, 0, 100);
+    if (satietyRef.current > 50) {
+      // not hungry
 
-    // Bu frame maksimum ne kadar ilerleyebiliriz?
-    // distance ile clamp ediyoruz ki hedefi asla geçmesin.
-    const moveDistance = Math.min(speed * delta, distance);
+      // Hedef ile mevcut pozisyon arasındaki fark.
+      const dx = target.x - mesh.position.x;
+      const dz = target.z - mesh.position.z;
 
-    mesh.position.x += directionX * moveDistance;
-    mesh.position.z += directionZ * moveDistance;
+      // Hedefe olan mesafe.
+      const distance = Math.sqrt(dx * dx + dz * dz);
+
+      if (distance < 0.1) {
+        // Hedefe çok yaklaştığımız için pozisyonu tam hedefe oturtuyoruz.
+        // Böylece 4.999 gibi küsuratlarla uğraşmıyoruz.
+        mesh.position.x = target.x;
+        mesh.position.z = target.z;
+
+        // Actor'ın şu anda üzerinde olduğu tile'ı bul.
+        const currentTile = getCurrentTileOfActor(
+          tiles,
+          mesh.position.x,
+          mesh.position.z,
+        );
+
+        if (!currentTile) {
+          return;
+        }
+
+        // Sadece dört yönlü yürünebilir komşuları bul.
+        const neighbors = getWalkableNeighbors(tiles, currentTile);
+
+        if (neighbors.length === 0) {
+          return;
+        }
+
+        // Komşulardan rastgele birini seç.
+        const randomIndex = Math.floor(Math.random() * neighbors.length);
+
+        const targetTile = neighbors[randomIndex];
+
+        // Tile koordinatını Three.js world koordinatına çevir.
+        targetRef.current = {
+          x: targetTile.x - WORLD_SIZE / 2,
+          z: targetTile.z - WORLD_SIZE / 2,
+        };
+
+        return;
+      }
+
+      // Hedef yönü.
+      const directionX = dx / distance;
+      const directionZ = dz / distance;
+
+      // Bu frame maksimum ne kadar ilerleyebiliriz?
+      // distance ile clamp ediyoruz ki hedefi asla geçmesin.
+      const moveDistance = Math.min(speed * delta, distance);
+
+      mesh.position.x += directionX * moveDistance;
+      mesh.position.z += directionZ * moveDistance;
+    } else {
+      // hungry
+    }
   };
 
   useFrame(onFrameUpdate);

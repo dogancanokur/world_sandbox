@@ -27,5 +27,6 @@ export default function generateHumans(
     id: index,
     x: tile.x,
     z: tile.z,
+    satiety: 100,
   }));
 }
