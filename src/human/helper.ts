@@ -1,22 +1,22 @@
 import type { ResourceNode } from "../resource/types.ts";
 import type { Tile } from "../world/generateWorld.ts";
 
-export function getClosestFoodResource(
+export function getClosestResource(
   currentTile: Tile,
-  foodResources: ResourceNode[],
+  resources: ResourceNode[],
 ): ResourceNode | null {
   //
   let closestDistance = Infinity;
   let closestFoodResource: ResourceNode | null = null;
 
-  for (const foodResource of foodResources) {
-    if (foodResource.amount <= 0) continue;
+  for (const resource of resources) {
+    if (resource.amount <= 0) continue;
     const manhattanDistance =
-      Math.abs(currentTile.z - foodResource.z) +
-      Math.abs(currentTile.x - foodResource.x);
+      Math.abs(currentTile.z - resource.z) +
+      Math.abs(currentTile.x - resource.x);
     if (closestDistance > manhattanDistance) {
       closestDistance = manhattanDistance;
-      closestFoodResource = foodResource;
+      closestFoodResource = resource;
     }
   }
 

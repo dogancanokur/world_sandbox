@@ -28,5 +28,6 @@ export default function generateHumans(
     x: tile.x,
     z: tile.z,
     satiety: 100,
+    woodInventory: 0,
   }));
 }

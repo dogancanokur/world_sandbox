@@ -77,6 +77,7 @@ export function World() {
           human={human}
           tiles={tiles}
           foodResources={foodResources}
+          woodResources={woodResources}
         />
       ))}
 

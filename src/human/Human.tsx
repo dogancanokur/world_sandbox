@@ -1,4 +1,4 @@
-import { WORLD_INITIAL, WORLD_SIZE } from "../config.ts";
+import { Building, WORLD_INITIAL, WORLD_SIZE } from "../config.ts";
 import { useRef } from "react";
 import type { Mesh } from "three";
 import { type RootState, useFrame } from "@react-three/fiber";
@@ -6,10 +6,7 @@ import type { Tile } from "../world/generateWorld.ts";
 import { getCurrentTileOfActor, getWalkableNeighbors } from "./pathfinding.ts";
 import type { ResourceNode } from "../resource/types.ts";
 import { clamp } from "../utils.ts";
-import {
-  getClosestFoodResource,
-  getClosestNeighborToResource,
-} from "./helper.ts";
+import { getClosestResource, getClosestNeighborToResource } from "./helper.ts";
 
 // ----------------------------------------------------------------------
 
@@ -18,24 +15,33 @@ export type Human = {
   x: number;
   z: number;
   satiety: number;
+  woodInventory: number;
 };
 
 type HumanMeshProps = {
   human: Human;
   tiles: Tile[];
   foodResources: ResourceNode[];
+  woodResources: ResourceNode[];
 };
 
 export default function HumanMesh({
   human,
   tiles,
   foodResources,
+  woodResources,
 }: HumanMeshProps) {
   // Three.js mesh'ini React render'ından bağımsız değiştirebilmek için ref tutuyoruz.
   const meshRef = useRef<Mesh>(null);
 
   // Runtime simulation state. Değiştiğinde React render tetiklenmez.
   const satietyRef = useRef(human.satiety);
+  const woodInventoryRef = useRef(human.woodInventory);
+
+  const timerRef = useRef(0);
+  const logTimerRef = useRef(0);
+
+  const lastCollectedWoodTimerRef = useRef(0);
 
   // targetRef world coordinate tutuyor.
   const targetRef = useRef({
@@ -50,8 +56,22 @@ export default function HumanMesh({
       return;
     }
 
+    logTimerRef.current += delta;
+    if (logTimerRef.current > 1) {
+      console.log(
+        "satiety: " +
+          Math.round(satietyRef.current) +
+          " wood: " +
+          woodInventoryRef.current,
+        " lastCollectedWoodTimerRef: " + lastCollectedWoodTimerRef.current,
+        " timer: " + timerRef.current,
+      );
+      logTimerRef.current = 0;
+    }
+    timerRef.current += delta;
+
     const hungerRate = 2;
-    const hungerThreshold = 80;
+    const hungerThreshold = 50;
     const speed = WORLD_INITIAL.human.speed;
 
     // delta sayesinde hunger FPS'ten bağımsız azalıyor.
@@ -101,18 +121,13 @@ export default function HumanMesh({
       return;
     }
 
-    const neighbors = getWalkableNeighbors(tiles, currentTile);
-
-    if (neighbors.length === 0) {
-      return;
-    }
-
     const isHungry = satietyRef.current <= hungerThreshold;
 
     let nextTile: Tile | null = null;
+    const neighbors = getWalkableNeighbors(tiles, currentTile);
 
     if (isHungry) {
-      const closestFoodResource = getClosestFoodResource(
+      const closestFoodResource = getClosestResource(
         currentTile,
         foodResources,
       );
@@ -126,9 +141,40 @@ export default function HumanMesh({
             closestFoodResource.amount -= 1;
             satietyRef.current = 100;
           }
+        }
+
+        if (neighbors.length === 0) {
           return;
         }
         nextTile = getClosestNeighborToResource(neighbors, closestFoodResource);
+      }
+      //
+    } else if (woodInventoryRef.current < Building.house.cost) {
+      const closestWoodResource = getClosestResource(
+        currentTile,
+        woodResources,
+      );
+      if (closestWoodResource) {
+        if (
+          currentTile.x === closestWoodResource.x &&
+          currentTile.z === closestWoodResource.z
+        ) {
+          if (
+            closestWoodResource.amount > 0 &&
+            timerRef.current - lastCollectedWoodTimerRef.current >= 1
+          ) {
+            console.log("collect woods");
+            closestWoodResource.amount -= 1;
+            woodInventoryRef.current += 1;
+            lastCollectedWoodTimerRef.current = timerRef.current;
+          }
+          return;
+        }
+
+        if (neighbors.length === 0) {
+          return;
+        }
+        nextTile = getClosestNeighborToResource(neighbors, closestWoodResource);
       }
     }
 
