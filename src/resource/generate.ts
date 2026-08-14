@@ -9,8 +9,7 @@ export function generateResources(
   resourceType: ResourceType,
   amount: number,
 ): ResourceNode[] {
-  // Sen doldur.
-
+  //
   const availableTiles = tiles.filter((tile) => {
     let tileType = "";
     if (resourceType === "food") tileType = "grass";
@@ -25,6 +24,7 @@ export function generateResources(
   });
 
   return shuffledTiles.slice(0, count).map((tile, index) => {
+    tile.hasResource = true;
     return {
       id: index,
       type: resourceType,

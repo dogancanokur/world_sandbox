@@ -8,6 +8,8 @@ export type Tile = {
   x: number;
   z: number;
   type: TileType;
+  hasBuilding: boolean;
+  hasResource: boolean;
 };
 
 export function generateWorld(seed: number): Tile[] {
@@ -53,6 +55,8 @@ export function generateWorld(seed: number): Tile[] {
         x,
         z,
         type,
+        hasBuilding: false,
+        hasResource: false,
       });
     }
   }

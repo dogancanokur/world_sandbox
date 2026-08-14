@@ -1,6 +1,8 @@
 import type { Tile } from "../world/generateWorld.ts";
 import { WORLD_SIZE } from "../config.ts";
 import { isWalkableTile } from "../world/worldUtils.ts";
+import { convertActualLocationToTileLocation } from "../utils.ts";
+import type { ResourceNode } from "../resource/types.ts";
 
 export function getCurrentTileOfActor(
   tiles: Tile[],
@@ -8,8 +10,7 @@ export function getCurrentTileOfActor(
   z: number,
 ): Tile | null {
   // Three.js world koordinatını tile koordinatına çeviriyoruz.
-  const tileX = Math.round(WORLD_SIZE / 2 + x);
-  const tileZ = Math.round(WORLD_SIZE / 2 + z);
+  const { tileX, tileZ } = convertActualLocationToTileLocation(x, z);
 
   return tiles.find((tile) => tile.x === tileX && tile.z === tileZ) ?? null;
 }
@@ -78,4 +79,44 @@ export function getWalkableTilesNear(
 
     return distanceSquared <= radius * radius;
   });
+}
+
+export function getClosestResource(
+  currentTile: Tile,
+  resources: ResourceNode[],
+): ResourceNode | null {
+  //
+  let closestDistance = Infinity;
+  let closestFoodResource: ResourceNode | null = null;
+
+  for (const resource of resources) {
+    if (resource.amount <= 0) continue;
+    const manhattanDistance =
+      Math.abs(currentTile.z - resource.z) +
+      Math.abs(currentTile.x - resource.x);
+    if (closestDistance > manhattanDistance) {
+      closestDistance = manhattanDistance;
+      closestFoodResource = resource;
+    }
+  }
+
+  return closestFoodResource;
+}
+
+export function getClosestNeighborToDestination(
+  neighbors: Tile[],
+  destination: { x: number; z: number },
+): Tile | null {
+  //
+  let closestDistance = Infinity;
+  let closestNeighbor: Tile | null = null;
+  for (const tile of neighbors) {
+    const manhattanDistance =
+      Math.abs(tile.x - destination.x) + Math.abs(tile.z - destination.z);
+    if (closestDistance > manhattanDistance) {
+      closestDistance = manhattanDistance;
+      closestNeighbor = tile;
+    }
+  }
+  return closestNeighbor;
 }

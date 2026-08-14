@@ -14,8 +14,14 @@
 <li>8C: Her tile'da food'a yaklaştıran walkable komşuyu seç.</li>
 <li>8D: Food tile'ına ulaşınca resource amount azalt ve satiety artır.</li>
 </ol></li>
-<li>Jobs/actions Yiyecek ara, odun topla</li>
-<li>Settlement İnsanların ev yapıp köy oluşturması</li>
+<li>Jobs/actions Yiyecek ara</li>
+<li>Jobs/actions odun topla</li>
+<li>Settlement İnsanların ev yapıp köy oluşturması
+<ol><li>10A House veri modeli</li>
+<li>10B Uygun grass tile bulma</li>
+<li>10C Human'ın o tile'a gitmesi</li>
+<li>10D House oluşturma + wood harcama</li>
+<li>10E House render</li></ol></li>
 <li>Village economy Ortak food/wood stoğu ve nüfus</li>
 <li>Multiple villages İkinci bağımsız köyün oluşması</li>
 <li>Ownership Köylere ait bölgeler</li>

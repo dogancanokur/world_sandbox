@@ -3,10 +3,16 @@ import { useRef } from "react";
 import type { Mesh } from "three";
 import { type RootState, useFrame } from "@react-three/fiber";
 import type { Tile } from "../world/generateWorld.ts";
-import { getCurrentTileOfActor, getWalkableNeighbors } from "./pathfinding.ts";
+import {
+  getClosestNeighborToDestination,
+  getClosestResource,
+  getCurrentTileOfActor,
+  getWalkableNeighbors,
+} from "./pathfinding.ts";
 import type { ResourceNode } from "../resource/types.ts";
 import { clamp } from "../utils.ts";
-import { getClosestResource, getClosestNeighborToResource } from "./helper.ts";
+import { getClosestBuildableTile } from "../house/helper.ts";
+import { buildHouse } from "./action.ts";
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +29,7 @@ type HumanMeshProps = {
   tiles: Tile[];
   foodResources: ResourceNode[];
   woodResources: ResourceNode[];
+  onBuildHouse: (x: number, y: number) => boolean;
 };
 
 export default function HumanMesh({
@@ -30,6 +37,7 @@ export default function HumanMesh({
   tiles,
   foodResources,
   woodResources,
+  onBuildHouse,
 }: HumanMeshProps) {
   // Three.js mesh'ini React render'ından bağımsız değiştirebilmek için ref tutuyoruz.
   const meshRef = useRef<Mesh>(null);
@@ -146,7 +154,10 @@ export default function HumanMesh({
         if (neighbors.length === 0) {
           return;
         }
-        nextTile = getClosestNeighborToResource(neighbors, closestFoodResource);
+        nextTile = getClosestNeighborToDestination(neighbors, {
+          x: closestFoodResource.x,
+          z: closestFoodResource.z,
+        });
       }
       //
     } else if (woodInventoryRef.current < Building.house.cost) {
@@ -174,7 +185,32 @@ export default function HumanMesh({
         if (neighbors.length === 0) {
           return;
         }
-        nextTile = getClosestNeighborToResource(neighbors, closestWoodResource);
+        nextTile = getClosestNeighborToDestination(neighbors, {
+          x: closestWoodResource.x,
+          z: closestWoodResource.z,
+        });
+      }
+    } else if (woodInventoryRef.current >= Building.house.cost) {
+      const closestBuildableTile = getClosestBuildableTile(currentTile, tiles);
+      if (closestBuildableTile) {
+        if (
+          currentTile.x !== closestBuildableTile.x ||
+          currentTile.z !== closestBuildableTile.z
+        ) {
+          if (neighbors.length === 0) {
+            return;
+          }
+          nextTile = getClosestNeighborToDestination(neighbors, {
+            x: closestBuildableTile.x,
+            z: closestBuildableTile.z,
+          });
+        }
+        if (
+          currentTile.x === closestBuildableTile.x &&
+          currentTile.z === closestBuildableTile.z
+        ) {
+          buildHouse(onBuildHouse, currentTile, woodInventoryRef);
+        }
       }
     }
 
