@@ -1,7 +1,7 @@
 import type { Tile } from "../world/generateWorld";
 import { WORLD_SIZE } from "../config";
-import { isWalkableTile } from "../world/worldUtils";
-import { convertActualLocationToTileLocation } from "../utils";
+import { isWalkableTile } from "../utils/worldUtils";
+import { convertActualLocationToTileLocation } from "../utils/utils";
 import type { ResourceNode } from "../resource/types";
 
 export function getCurrentTileOfActor(

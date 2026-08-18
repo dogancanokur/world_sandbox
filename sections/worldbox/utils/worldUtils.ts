@@ -1,4 +1,4 @@
-import type { Tile } from "./generateWorld";
+import type { Tile } from "../world/generateWorld";
 
 export function isWalkableTile(tile: Tile) {
   return (

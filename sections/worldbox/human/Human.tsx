@@ -10,7 +10,7 @@ import {
   getWalkableNeighbors,
 } from "./pathfinding";
 import type { ResourceNode } from "../resource/types";
-import { clamp } from "../utils";
+import { clamp } from "../utils/utils";
 import { getClosestBuildableTile } from "../house/helper";
 import { buildHouse } from "./action";
 

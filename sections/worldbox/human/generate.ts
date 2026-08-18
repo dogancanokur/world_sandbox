@@ -1,7 +1,7 @@
 import type { Tile } from "../world/generateWorld";
-import { randomFromCoordinates } from "../utils";
+import { randomFromCoordinates } from "../utils/utils";
 import type { Human } from "./Human";
-import { isWalkableTile } from "../world/worldUtils";
+import { isWalkableTile } from "../utils/worldUtils";
 // ----------------------------------------------------------------------
 
 export default function generateHumans(

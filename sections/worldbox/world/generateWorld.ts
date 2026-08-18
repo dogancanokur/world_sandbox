@@ -1,6 +1,6 @@
 import { valueNoise } from "./noise";
-import { clamp } from "../utils";
-import { WORLD_SIZE } from "../config";
+import { clamp } from "../utils/utils";
+import { NOISE_PARAMETER, WORLD_SIZE } from "../config";
 
 export type TileType = "water" | "sand" | "grass" | "forest";
 
@@ -33,7 +33,7 @@ export function generateWorld(seed: number): Tile[] {
       // Koordinatları küçültmemizin sebebi noise'u "zoomlamak".
       // 0.15 küçük ve geniş bölgeler oluşturur.
       // Daha büyük değerler daha parçalı terrain üretir.
-      const noise = valueNoise(x * 0.15, z * 0.15, seed);
+      const noise = valueNoise(x * NOISE_PARAMETER, z * NOISE_PARAMETER, seed);
 
       // Noise 0-1 arasında.
       // Biraz merkeze ağırlık verip ikisini birleştiriyoruz.

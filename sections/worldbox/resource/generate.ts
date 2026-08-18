@@ -1,6 +1,6 @@
 import type { ResourceNode, ResourceType } from "./types";
 import type { Tile } from "../world/generateWorld";
-import { randomFromCoordinates } from "../utils";
+import { randomFromCoordinates } from "../utils/utils";
 
 export function generateResources(
   tiles: Tile[],

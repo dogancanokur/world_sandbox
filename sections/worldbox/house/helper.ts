@@ -1,5 +1,5 @@
 import type { Tile } from "../world/generateWorld";
-import { getManhattanDistance } from "../world/helper";
+import { getManhattanDistance } from "../utils/helper";
 
 export function getClosestBuildableTile(
   currentTile: Tile,

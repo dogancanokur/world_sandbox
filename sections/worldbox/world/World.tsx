@@ -6,7 +6,7 @@ import HumanMesh from "../human/Human";
 import { generateResources } from "../resource/generate";
 import ResourceMesh from "../resource/ResourceMesh";
 import type { House } from "../house/types";
-import { getRandomInt } from "../utils";
+import { getRandomInt } from "../utils/utils";
 
 // ----------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ export function World() {
   // şimdilik component dışında değil, burada bir kere üretiyoruz.
 
   const seed = useMemo(() => {
-    return getRandomInt(1994);
+    return getRandomInt(100000);
   }, []);
 
   // Dünya sadece seed değişince yeniden üretilir.
@@ -52,6 +52,7 @@ export function World() {
   );
 
   const [houses, setHouses] = useState<House[]>([]);
+
   useEffect(() => {
     setHouses([]);
   }, [seed]);
