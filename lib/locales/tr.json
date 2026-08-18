@@ -1,0 +1,25 @@
+{
+  "key": "Anahtar",
+  "footer": "faecon tarafından oluşturuldu",
+  "metronome": "Metronom",
+  "dashboard": "",
+  "lab": "Lab",
+  "blog": "Blog",
+  "main-page": "Ana Sayfa",
+  "about-me": "Hakkımda",
+  "hello": "Merhaba",
+  "hello2": "Ben Doğancan 'faecon' Okur.",
+  "about-description": "Web teknolojileriyle modern, performanslı ve kullanıcı odaklı arayüzler geliştiren bir yazılım geliştiriciyim. React, Next.js ve TypeScript ekosisteminde üretilebilir, sürdürülebilir ve temiz çözümler oluşturmaya odaklanıyorum.",
+  "about-education": "Lisans derecemi Yalova Üniversitesi Bilgisayar Mühendisliğinde 2018 yılında, Yüksek Lisansımı ise Beykent Üniversitesi Bilgisayar Mühendisliği alanında 2023 yılında tamamladım.",
+  "about-work": "2019 yılından itibaren Hitit Bilgisayar Hizmetleri'de çalışıyorum ve bu süreçte sürekli olarak yeni bilgiler ve deneyimler kazanıyorum. Bu sayede, her gün farklı sorunları çözmeye ve yeni teknolojilere girişmeye çalışıyorum. Yan proje olarak bilgisayar oyunları geliştirmeye ve yazılım geliştirme konusunda yeni bilgiler öğrenmeye devam ediyorum.",
+  "contact-me": "Contact Me",
+  "profile": "Profil",
+  "software-developer": "Yazılım Geliştirici",
+  "turkey": "Turkey",
+  "linkedin-profile": "LinkedIn Profile",
+
+  "ftgPlayerInfoText": "Stat puanlarını ve beceri seviyelerini gir. Program en uygun rolü, lig hedefi için yeterliliği, kritik eksikleri ve tut/sat/geliştir kararını canlı hesaplar.",
+  "ftgPlayerWarningText1": "Not:",
+  "ftgPlayerWarningText2": "Lig eşikleri resmi oyun verisi değildir.",
+  "ftgPlayerWarningText3": "Varsayılanlar tahmini başlangıç değeridir; kendi save'indeki rakip seviyesine göre düzenle."
+}

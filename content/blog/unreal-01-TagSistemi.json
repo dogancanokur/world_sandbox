@@ -1,0 +1,152 @@
+{
+  "slug": "tag-sistemi",
+  "title": "Tag sistemi: Kod yazmadan gruplama ve kural uygulama",
+  "excerpt": "Unreal Gameplay Tags ile ürünleri, depolama alanlarını ve müşteri ihtiyaçlarını tek tek kontrol etmek yerine ortak kurallar üzerinden yönetmek.",
+  "date": "2026-08-15",
+  "category": "Unreal Engine",
+  "tags": ["Gameplay Tags", "Sistem Tasarımı"],
+  "featured": true,
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Tag’ler, ürünleri kod yazmadan gruplamak, filtrelemek ve kurallar uygulamak için kullanabileceğin esnek bir sınıflandırma sistemidir. Bir ürünün adını tek tek kontrol etmek yerine, o ürünün hangi kategoriye veya özelliğe ait olduğunu sorgularsın."
+    },
+    {
+      "type": "paragraph",
+      "text": "Örneğin OrangeJuice için ürünün kimliği yine bir DataTable satırı veya Product ID olabilir. Tag ise bu ürünün içecek, meyve suyu ve rafta saklanabilir olduğunu belirtir. Böylece kimlik ile sınıflandırma birbirinden ayrılır."
+    },
+    {
+      "type": "heading",
+      "text": "Basit bir ürün tag yapısı"
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "Product.Category.Beverage\nProduct.Type.Juice\nProduct.Storage.Shelf\nProduct.Temperature.Ambient"
+    },
+    {
+      "type": "heading",
+      "text": "Raf uygunluğu"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bir rafın kabul ettiği ürünleri tek tek tanımlamak yerine, rafa Product.Category.Beverage tag’ini verebilirsin. Ürün rafa konulurken de ürünün bu tag’e sahip olup olmadığını kontrol edersin."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "Shelf.AcceptedTags:\nProduct.Category.Beverage\n\nProductTags HasTag Product.Category.Beverage"
+    },
+    {
+      "type": "heading",
+      "text": "Müşteri alışveriş tercihleri"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bazı müşteriler belirli bir ürün değil, bir kategori arayabilir. DesiredTag olarak Product.Category.Beverage tuttuğunda OrangeJuice, Cola veya Water gibi ürünleri tek tek kontrol etmen gerekmez."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "DesiredTag:\nProduct.Category.Beverage"
+    },
+    {
+      "type": "heading",
+      "text": "İndirim ve kampanyalar"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hafta sonu kampanyasında bütün içeceklere indirim uygulamak istediğinde, kampanyayı Product.Category.Beverage tag’ine bağlayabilirsin. Yeni bir içecek eklendiğinde kampanya kodunu değiştirmen gerekmez."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "WeekendSaleTag:\nProduct.Category.Beverage\n\n// Bu tag’e sahip ürünlere yüzde 10 indirim"
+    },
+    {
+      "type": "heading",
+      "text": "Depolama kuralları"
+    },
+    {
+      "type": "paragraph",
+      "text": "Depolama alanları için de aynı yaklaşım kullanılabilir. Süt buzdolabına, dondurma dondurucuya, cips ise normal rafa gider. Ürünün saklama biçimi doğrudan Storage tag’i üzerinden belirlenir."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "Product.Storage.Fridge\nProduct.Storage.Freezer\nProduct.Storage.Shelf"
+    },
+    {
+      "type": "heading",
+      "text": "Müşteri ihtiyaçları"
+    },
+    {
+      "type": "paragraph",
+      "text": "Müşterinin ihtiyacını da tag ile tanımlayabilirsin. Customer.Need.Drink ihtiyacını karşılayan ürünleri Product.Category.Beverage tag’i üzerinden bulmak, belirli bir ürün adına bağımlı kalmayan daha genel bir sistem sağlar."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "Customer.Need.Drink\n\nProduct.Category.Beverage"
+    },
+    {
+      "type": "heading",
+      "text": "Görev ve hedefler"
+    },
+    {
+      "type": "paragraph",
+      "text": "Görev sistemlerinde de tag’ler liste tutma ihtiyacını azaltır. Örneğin oyuncudan belirli ürünleri değil, Product.Type.Juice tag’ine sahip 10 ürün satmasını isteyebilirsin."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "Sell 10 products with:\nProduct.Type.Juice"
+    },
+    {
+      "type": "heading",
+      "text": "İleride lisans sistemi"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aynı yapı ileride lisans sistemi için de kullanılabilir. Oyuncunun sahip olduğu License.Allowed.Beverage tag’i ile satın almak istediği ürünün kategorisini karşılaştırabilirsin."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "License.Allowed.Beverage"
+    },
+    {
+      "type": "heading",
+      "text": "Neden tag kullanmalısın?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tag kullanmadığında kod zamanla ürün isimleriyle dolmaya başlar. Yeni bir ürün ekledikçe aynı kontrol listelerini güncellemen gerekir. Tag sistemi ise kuralı ürün adından ayırır ve yeni ürünlerin mevcut kurallara otomatik olarak dahil olmasını sağlar."
+    },
+    {
+      "type": "code",
+      "language": "text",
+      "code": "// Tag olmadan\nif Product == Milk\nor Product == Cola\nor Product == OrangeJuice\nor Product == Water\n\n// Tag ile\nif ProductTags HasTag Product.Category.Beverage"
+    },
+    {
+      "type": "quote",
+      "text": "Tag, ürünün kimliği değil; ürün hakkında kuralların konuştuğu ortak dildir."
+    },
+    {
+      "type": "heading",
+      "text": "Hiyerarşik tag yapısı"
+    },
+    {
+      "type": "paragraph",
+      "text": "Unreal Gameplay Tags hiyerarşik çalışır. Product.Category.Beverage.Juice gibi daha özel bir tag, üst seviye Product.Category.Beverage sorgusuyla da eşleşebilir. Böylece genel ve özel kuralları aynı sistem içinde kullanabilirsin."
+    },
+    {
+      "type": "heading",
+      "text": "Prototip için başlangıç"
+    },
+    {
+      "type": "paragraph",
+      "text": "Prototip aşamasında her şeyi tag yapmaya gerek yok. Başlangıç için gerçekten fayda sağlayacak üç alan yeterli: Product.Category.*, Product.Storage.* ve Product.Type.*. OrangeJuice kimliği ise DataTable satırı veya Product ID olarak kalmalı; tag sadece sınıflandırma ve kural uygulama amacıyla kullanılmalı."
+    }
+  ]
+}
