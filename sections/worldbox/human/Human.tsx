@@ -12,7 +12,7 @@ import {
 import type { ResourceNode } from "../resource/types";
 import { clamp } from "../utils/utils";
 import { getClosestBuildableTile } from "../house/helper";
-import { buildHouse } from "./action";
+import { buildHouse } from "../house/action";
 
 // ----------------------------------------------------------------------
 

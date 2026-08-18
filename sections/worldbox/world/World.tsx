@@ -1,12 +1,15 @@
 import { generateWorld, getTileColor } from "./generateWorld";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { WORLD_INITIAL, WORLD_SIZE } from "../config";
 import generateHumans from "../human/generate";
 import HumanMesh from "../human/Human";
 import { generateResources } from "../resource/generate";
-import ResourceMesh from "../resource/ResourceMesh";
-import type { House } from "../house/types";
 import { getRandomInt } from "../utils/utils";
+import ResourceMesh from "../resource/ResourceMesh";
+
+import type { House } from "../house/types";
+import type { Village } from "@/sections/worldbox/village/types";
+import { getOnBuildHouse } from "@/sections/worldbox/house/action";
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +42,7 @@ export function World() {
       ),
     [tiles, seed],
   );
+
   const woodResources = useMemo(
     () =>
       generateResources(
@@ -51,34 +55,10 @@ export function World() {
     [tiles, seed],
   );
 
+  const [villages, setVillages] = useState<Village[]>([]);
+
   const [houses, setHouses] = useState<House[]>([]);
 
-  useEffect(() => {
-    setHouses([]);
-  }, [seed]);
-
-  function getOnBuildHouse() {
-    return function (x: number, z: number): boolean {
-      //
-      const foundTile = tiles.find((tile) => tile.x === x && tile.z === z);
-      if (
-        foundTile &&
-        foundTile.type === "grass" &&
-        !foundTile.hasBuilding &&
-        !foundTile.hasResource
-      ) {
-        const newHouse: House = {
-          id: houses.length,
-          x: x,
-          z: z,
-        };
-        setHouses((prevState) => [...prevState, newHouse]);
-        foundTile.hasBuilding = true;
-        return true;
-      }
-      return false;
-    };
-  }
 
   return (
     <>
@@ -123,7 +103,7 @@ export function World() {
           tiles={tiles}
           foodResources={foodResources}
           woodResources={woodResources}
-          onBuildHouse={getOnBuildHouse()}
+          onBuildHouse={getOnBuildHouse(tiles, houses, setHouses, villages,setVillages)}
         />
       ))}
 
