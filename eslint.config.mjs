@@ -8,8 +8,8 @@ const eslintConfig = defineConfig([
 
   {
     rules: {
-      // Hatalı equality kullanımını engeller.
-      eqeqeq: ["error", "always"],
+      // Güvenli null kontrollerine izin verir, diğer gevşek eşitlikleri engeller.
+      eqeqeq: ["error", "smart"],
 
       // Değişmeyen değişkenlerde const kullanılmasını zorlar.
       "prefer-const": "error",
@@ -23,6 +23,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "dist/**",
     "coverage/**",
     "node_modules/**",
     "next-env.d.ts",

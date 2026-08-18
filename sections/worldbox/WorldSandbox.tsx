@@ -1,9 +1,9 @@
 "use client";
-import "./App.css";
+import "./worldbox.css";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { World } from "@/app/lab/world-sandbox/world/World";
-import Hud from "@/app/lab/world-sandbox/hud/hud";
+import { World } from "@/sections/worldbox/world/World";
+import Hud from "@/sections/worldbox/hud/hud";
 
 // ----------------------------------------------------------------------
 

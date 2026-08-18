@@ -1,12 +1,18 @@
-# An .aiignore file follows the same syntax as a .gitignore file.
-# .gitignore documentation: https://git-scm.com/docs/gitignore
+# Dependencies, caches, and generated output
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+.git/
+.idea/
+.vercel/
+*.tsbuildinfo
 
-# you can ignore files
-.DS_Store
+# Secrets and local-only files
+.env*
+!.env.example
+*.local
 *.log
 *.tmp
-
-# or folders
-dist/
-build/
-out/

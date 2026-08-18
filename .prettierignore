@@ -1,6 +1,13 @@
-.next
-node_modules
-dist
-build
-coverage
-pnpm-lock.yaml
+# Dependencies and generated output
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Tool and package-manager output
+package-lock.json
+.idea/
+.vercel/
